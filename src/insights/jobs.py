@@ -2,32 +2,30 @@ from functools import lru_cache
 from typing import List, Dict
 import csv
 
+path = "../../data/jobs.csv"
+
 
 @lru_cache
 def read(path: str) -> List[Dict]:
-
-    with open(path, encoding="utf-8") as file:
-        jobs_reader = csv.reader(file, delimiter=",", quotechar='"')
-        [*data] = jobs_reader
-    return data
+    try:
+        with open(path, encoding="utf-8") as file:
+            jobs_reader = csv.DictReader(file, delimiter=",", quotechar='"')
+            data = [row for row in jobs_reader]
+        return data
+    except Exception as e:
+        print(f"Ocorreu um erro na leitura do arquivo CSV: {e}")
 
 
 def get_unique_job_types(path: str) -> List[str]:
-    """Checks all different job types and returns a list of them
-
-    Must call `read`
-
-    Parameters
-    ----------
-    path : str
-        Must be passed to `read`
-
-    Returns
-    -------
-    list
-        List of unique job types
-    """
-    raise NotImplementedError
+    try:
+        jobs_list = read(path)
+        job_type = []
+        for job in jobs_list:
+            if job["job_type"] not in job_type:
+                job_type.append(job["job_type"])
+        return job_type
+    except Exception as e:
+        print(f"Ocorreu um erro na leitura do arquivo CSV: {e}")
 
 
 def filter_by_job_type(jobs: List[Dict], job_type: str) -> List[Dict]:
@@ -46,3 +44,6 @@ def filter_by_job_type(jobs: List[Dict], job_type: str) -> List[Dict]:
         List of jobs with provided job_type
     """
     raise NotImplementedError
+
+
+print(get_unique_job_types(path))
