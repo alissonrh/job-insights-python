@@ -30,47 +30,58 @@ def get_min_salary(path: str) -> int:
         print(f"Ocorreu um erro: {e}")
 
 
+def validate_is_numeric_value(value) -> bool:
+    #   Valida se o valor é numérico.
+    return (
+        isinstance(value, (int))
+        or isinstance(value, (str))
+        and value.isnumeric()
+    )
+
+
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
-    """Checks if a given salary is in the salary range of a given job
+    salary_keys = ["min_salary", "max_salary"]
 
-    Parameters
-    ----------
-    job : dict
-        The job with `min_salary` and `max_salary` keys
-    salary : int
-        The salary to check if matches with salary range of the job
+    for key in salary_keys:
+        if key not in job:
+            raise ValueError(f"Missing key '{key}' in job dictionary")
+        if not validate_is_numeric_value(job[key]):
+            raise ValueError(
+                f"Invalid value for key '{key}', "
+                "expected numeric value (int or string)"
+            )
 
-    Returns
-    -------
-    bool
-        True if the salary is in the salary range of the job, False otherwise
+    min_salary = int(job["min_salary"])
+    max_salary = int(job["max_salary"])
 
-    Raises
-    ------
-    ValueError
-        If `job["min_salary"]` or `job["max_salary"]` doesn't exists
-        If `job["min_salary"]` or `job["max_salary"]` aren't valid integers
-        If `job["min_salary"]` is greather than `job["max_salary"]`
-        If `salary` isn't a valid integer
-    """
-    raise NotImplementedError
+    if min_salary > max_salary or not validate_is_numeric_value(salary):
+        raise ValueError(
+            "Invalid salary range, min_salary "
+            "must be less than or equal to max_salary"
+        )
+    return min_salary <= int(salary) <= max_salary
 
 
 def filter_by_salary_range(
     jobs: List[dict], salary: Union[str, int]
 ) -> List[Dict]:
-    """Filters a list of jobs by salary range
-
-    Parameters
-    ----------
-    jobs : list
-        The jobs to be filtered
-    salary : int
-        The salary to be used as filter
-
-    Returns
-    -------
-    list
-        Jobs whose salary range contains `salary`
-    """
-    raise NotImplementedError
+    valid_jobs = []
+    for job in jobs:
+        # Verifica se o emprego tem as chaves "min_salary" e "max_salary" e se
+        # o min_salary é menor que o max_salary
+        if (
+            validate_is_numeric_value(job["min_salary"])
+            and validate_is_numeric_value(job["max_salary"])
+            and int(job["min_salary"]) < int(job["max_salary"])
+        ):
+            # Se for válido, adiciona esse emprego à lista de empregos válidos
+            valid_jobs.append(job)
+            # Filtra a lista de empregos válidos para incluir somente aqueles
+            # em que o salário está dentro do intervalo especificado
+    # pelos campos min_salary e max_salary no dicionário do emprego
+    return [
+        valid_job
+        for valid_job in valid_jobs
+        if validate_is_numeric_value(salary)
+        and matches_salary_range(valid_job, salary)
+    ]
