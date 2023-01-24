@@ -1,7 +1,5 @@
 from typing import Union, List, Dict
-from jobs import read
-
-path = "../../data/jobs.csv"
+from .jobs import read
 
 
 def get_max_salary(path: str) -> int:
@@ -10,7 +8,7 @@ def get_max_salary(path: str) -> int:
         valid_salaries = []
         for job in jobs_list:
             salary = job["max_salary"]
-            if salary != 'invalid' and salary != '':
+            if salary != "invalid" and salary != "":
                 valid_salaries.append(int(salary))
         maximum = max(valid_salaries)
         return maximum
@@ -24,7 +22,7 @@ def get_min_salary(path: str) -> int:
         valid_salaries = []
         for job in jobs_list:
             salary = job["min_salary"]
-            if salary != 'invalid' and salary != '':
+            if salary != "invalid" and salary != "":
                 valid_salaries.append(int(salary))
         minimum = min(valid_salaries)
         return minimum
@@ -76,7 +74,3 @@ def filter_by_salary_range(
         Jobs whose salary range contains `salary`
     """
     raise NotImplementedError
-
-
-print(get_max_salary(path))
-print(get_min_salary(path))
