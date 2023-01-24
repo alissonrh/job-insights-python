@@ -1,40 +1,35 @@
 from typing import Union, List, Dict
+from jobs import read
+
+path = "../../data/jobs.csv"
 
 
 def get_max_salary(path: str) -> int:
-    """Get the maximum salary of all jobs
-
-    Must call `read`
-
-    Parameters
-    ----------
-    path : str
-        Must be passed to `read`
-
-    Returns
-    -------
-    int
-        The maximum salary paid out of all job opportunities
-    """
-    raise NotImplementedError
+    try:
+        jobs_list = read(path)
+        valid_salaries = []
+        for job in jobs_list:
+            salary = job["max_salary"]
+            if salary != 'invalid' and salary != '':
+                valid_salaries.append(int(salary))
+        maximum = max(valid_salaries)
+        return maximum
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
 
 
 def get_min_salary(path: str) -> int:
-    """Get the minimum salary of all jobs
-
-    Must call `read`
-
-    Parameters
-    ----------
-    path : str
-        Must be passed to `read`
-
-    Returns
-    -------
-    int
-        The minimum salary paid out of all job opportunities
-    """
-    raise NotImplementedError
+    try:
+        jobs_list = read(path)
+        valid_salaries = []
+        for job in jobs_list:
+            salary = job["min_salary"]
+            if salary != 'invalid' and salary != '':
+                valid_salaries.append(int(salary))
+        minimum = min(valid_salaries)
+        return minimum
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
 
 
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
@@ -64,8 +59,7 @@ def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
 
 
 def filter_by_salary_range(
-    jobs: List[dict],
-    salary: Union[str, int]
+    jobs: List[dict], salary: Union[str, int]
 ) -> List[Dict]:
     """Filters a list of jobs by salary range
 
@@ -82,3 +76,7 @@ def filter_by_salary_range(
         Jobs whose salary range contains `salary`
     """
     raise NotImplementedError
+
+
+print(get_max_salary(path))
+print(get_min_salary(path))
